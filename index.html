@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TASK//OS — Sistema de Tarefas</title>
+
+  <!-- Google Fonts: Display + Body -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Syne:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Phosphor Icons (traço fino) -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Cursor personalizado -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Textura de grade no background -->
+  <div class="bg-grid" aria-hidden="true"></div>
+  <div class="bg-noise" aria-hidden="true"></div>
+
+  <!-- ===================== APP CONTAINER ===================== -->
+  <main class="app-container">
+
+    <!-- HEADER -->
+    <header class="app-header stagger-1">
+      <div class="header-accent-line" aria-hidden="true"></div>
+
+      <div class="header-content">
+        <div class="header-left">
+          <span class="system-label">SYS://TASKS</span>
+          <h1 class="app-title">
+            <span class="title-glitch" data-text="TASK">TASK</span>
+            <span class="title-separator">//</span>
+            <span class="title-accent">OS</span>
+          </h1>
+          <p class="app-subtitle">Gerenciador de tarefas de precisão</p>
+        </div>
+
+        <div class="header-right">
+          <div class="pending-badge">
+            <span class="pending-count" id="pendingCount">0</span>
+            <span class="pending-label">pendentes</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-decorative" aria-hidden="true">
+        <div class="deco-line"></div>
+        <div class="deco-dot"></div>
+        <div class="deco-line short"></div>
+      </div>
+    </header>
+
+    <!-- INPUT SECTION -->
+    <section class="input-section stagger-2">
+      <div class="input-card glass">
+        <div class="input-label-row">
+          <span class="input-label">// nova tarefa</span>
+          <span class="input-hint">ENTER para adicionar</span>
+        </div>
+        <div class="input-wrapper">
+          <i class="ph ph-plus-circle input-icon"></i>
+          <input
+            type="text"
+            id="taskInput"
+            class="task-input"
+            placeholder="Descreva sua próxima tarefa..."
+            maxlength="120"
+            autocomplete="off"
+          />
+          <button class="btn-add" id="addBtn" aria-label="Adicionar tarefa">
+            <span class="btn-text">ADD</span>
+            <span class="btn-glow" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FILTER SECTION -->
+    <section class="filter-section stagger-3">
+      <div class="filter-bar">
+        <div class="filter-label">
+          <i class="ph ph-funnel"></i>
+          <span>filtrar</span>
+        </div>
+        <div class="filter-tabs" role="tablist" aria-label="Filtros de tarefas">
+          <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">
+            <span>Todas</span>
+            <span class="tab-count" id="countAll">0</span>
+          </button>
+          <button class="filter-tab" data-filter="pending" role="tab" aria-selected="false">
+            <span>Pendentes</span>
+            <span class="tab-count" id="countPending">0</span>
+          </button>
+          <button class="filter-tab" data-filter="done" role="tab" aria-selected="false">
+            <span>Concluídas</span>
+            <span class="tab-count" id="countDone">0</span>
+          </button>
+        </div>
+
+        <button class="btn-clear-done" id="clearDoneBtn" aria-label="Limpar tarefas concluídas">
+          <i class="ph ph-trash"></i>
+          <span>Limpar concluídas</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- TASK LIST -->
+    <section class="tasks-section stagger-4">
+
+      <!-- Estado vazio -->
+      <div class="empty-state" id="emptyState" hidden>
+        <div class="empty-icon">
+          <i class="ph ph-check-square"></i>
+        </div>
+        <p class="empty-title">Nenhuma tarefa aqui</p>
+        <p class="empty-sub">Adicione uma tarefa acima para começar</p>
+      </div>
+
+      <!-- Lista de tarefas -->
+      <ul class="task-list" id="taskList" aria-label="Lista de tarefas" role="list"></ul>
+
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="app-footer stagger-5">
+      <div class="footer-line" aria-hidden="true"></div>
+      <div class="footer-content">
+        <span class="footer-text">TASK//OS v1.0.0</span>
+        <span class="footer-dot" aria-hidden="true">·</span>
+        <span class="footer-text">SISTEMA OPERACIONAL DE TAREFAS</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- MODAL DE EDIÇÃO -->
+  <div class="modal-overlay" id="editModal" role="dialog" aria-modal="true" aria-label="Editar tarefa" hidden>
+    <div class="modal-card glass">
+      <div class="modal-header">
+        <span class="modal-title">// editar tarefa</span>
+        <button class="modal-close" id="modalClose" aria-label="Fechar modal">
+          <i class="ph ph-x"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="editInput" class="task-input" maxlength="120" />
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" id="modalCancel">Cancelar</button>
+        <button class="btn-add" id="modalSave">
+          <span class="btn-text">SALVAR</span>
+          <span class="btn-glow" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,1024 @@
+/* ============================================================
+   TASK//OS — Stylesheet
+   Tema: Dark Futurista / Cyberpunk
+   Cor primária: #E8550D (laranja vibrante)
+   Última atualização: 2026
+   ============================================================ */
+
+/* ─────────────────────────────────────────
+   1. CUSTOM PROPERTIES (Design Tokens)
+───────────────────────────────────────── */
+:root {
+  /* Paleta base */
+  --color-bg:          #050810;
+  --color-bg-layer1:   #080d1a;
+  --color-bg-layer2:   #0d1428;
+  --color-surface:     rgba(13, 20, 40, 0.72);
+  --color-surface-alt: rgba(18, 28, 54, 0.55);
+
+  /* Laranja — cor principal */
+  --color-accent:      #E8550D;
+  --color-accent-dark: #C2410C;
+  --color-accent-warm: #FF6A1A;
+  --color-accent-glow: rgba(232, 85, 13, 0.35);
+  --color-accent-dim:  rgba(232, 85, 13, 0.12);
+
+  /* Texto */
+  --color-text-primary:   #F0EEE8;
+  --color-text-secondary: rgba(240, 238, 232, 0.55);
+  --color-text-muted:     rgba(240, 238, 232, 0.28);
+
+  /* Bordas */
+  --color-border:        rgba(232, 85, 13, 0.18);
+  --color-border-subtle: rgba(240, 238, 232, 0.07);
+  --color-border-bright: rgba(232, 85, 13, 0.55);
+
+  /* Tipografia */
+  --font-display: 'Orbitron', monospace;
+  --font-body:    'Syne', sans-serif;
+
+  /* Espaçamentos */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  40px;
+  --space-2xl: 64px;
+
+  /* Raios de borda — mantém ar técnico */
+  --radius-sm: 3px;
+  --radius-md: 5px;
+  --radius-lg: 8px;
+
+  /* Transições */
+  --transition: 0.3s ease;
+  --transition-fast: 0.15s ease;
+  --transition-slow: 0.6s ease;
+
+  /* Sombras & Glow */
+  --glow-accent:  0 0 18px rgba(232, 85, 13, 0.45),
+                  0 0 40px rgba(232, 85, 13, 0.18);
+  --glow-subtle:  0 0 8px  rgba(232, 85, 13, 0.25);
+  --shadow-card:  0 8px 32px rgba(0, 0, 0, 0.55),
+                  0 1px 0 rgba(232, 85, 13, 0.08) inset;
+
+  /* Layout */
+  --max-width: 720px;
+}
+
+/* ─────────────────────────────────────────
+   2. RESET & BASE
+───────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: none; /* cursor customizado */
+}
+
+/* Remove cursor padrão em elementos interativos */
+button, input, a { cursor: none; }
+
+ul { list-style: none; }
+
+/* ─────────────────────────────────────────
+   3. SCROLLBAR CUSTOMIZADA
+───────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--color-bg-layer1); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent-dark);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
+/* ─────────────────────────────────────────
+   4. CURSOR PERSONALIZADO
+───────────────────────────────────────── */
+.cursor-dot {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: var(--color-accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease, opacity 0.3s;
+  box-shadow: var(--glow-subtle);
+}
+
+.cursor-ring {
+  position: fixed;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid var(--color-accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: transform 0.18s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s;
+  opacity: 0.7;
+}
+
+/* Expansão do anel ao hover em elementos interativos */
+body.cursor-hover .cursor-ring {
+  width: 44px;
+  height: 44px;
+  opacity: 0.4;
+  border-color: var(--color-accent-warm);
+}
+
+/* ─────────────────────────────────────────
+   5. BACKGROUND — Grade + Ruído
+───────────────────────────────────────── */
+
+/* Textura de grade digital */
+.bg-grid {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(232, 85, 13, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232, 85, 13, 0.035) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+}
+
+/* Ruído/grain sutil */
+.bg-noise {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* ─────────────────────────────────────────
+   6. GLASSMORPHISM MIXIN
+───────────────────────────────────────── */
+.glass {
+  background: var(--color-surface);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+}
+
+/* ─────────────────────────────────────────
+   7. ANIMAÇÕES DE ENTRADA (stagger)
+───────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Glitch nos títulos */
+@keyframes glitch {
+  0%, 92%, 100% {
+    clip-path: none;
+    transform: none;
+  }
+  93% {
+    clip-path: polygon(0 20%, 100% 20%, 100% 28%, 0 28%);
+    transform: translate(-3px, 0);
+  }
+  94% {
+    clip-path: polygon(0 55%, 100% 55%, 100% 62%, 0 62%);
+    transform: translate(3px, 0);
+  }
+  96% {
+    clip-path: polygon(0 10%, 100% 10%, 100% 18%, 0 18%);
+    transform: translate(-2px, 0);
+    color: var(--color-accent-warm);
+  }
+}
+
+/* Scan line no hover de botões */
+@keyframes scanLine {
+  from { left: -100%; }
+  to   { left: 200%; }
+}
+
+/* Pulse no badge de pendentes */
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--color-accent-glow); }
+  50%       { box-shadow: 0 0 0 8px transparent; }
+}
+
+/* Stagger — cada seção entra com delay crescente */
+.stagger-1 { animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: 0.05s; }
+.stagger-2 { animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: 0.15s; }
+.stagger-3 { animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: 0.25s; }
+.stagger-4 { animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: 0.35s; }
+.stagger-5 { animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: 0.45s; }
+
+/* ─────────────────────────────────────────
+   8. LAYOUT PRINCIPAL
+───────────────────────────────────────── */
+.app-container {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-md) var(--space-2xl);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+/* ─────────────────────────────────────────
+   9. HEADER
+───────────────────────────────────────── */
+.app-header {
+  position: relative;
+  padding-bottom: var(--space-lg);
+}
+
+/* Linha de acento no topo do header — rompe o grid intencionalmente */
+.header-accent-line {
+  position: absolute;
+  top: -var(--space-xl);
+  left: -40px;
+  width: 3px;
+  height: calc(100% + 20px);
+  background: linear-gradient(to bottom, transparent, var(--color-accent), transparent);
+  opacity: 0.6;
+}
+
+.header-content {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+/* Label sistema (canto superior) */
+.system-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--color-accent);
+  opacity: 0.75;
+  display: block;
+  margin-bottom: var(--space-sm);
+}
+
+/* Título principal com gradiente metálico laranja */
+.app-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 8vw, 3.5rem);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  line-height: 1;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+}
+
+/* Efeito glitch no texto TASK */
+.title-glitch {
+  display: inline-block;
+  animation: glitch 8s infinite;
+  background: linear-gradient(135deg, var(--color-text-primary) 0%, var(--color-accent-warm) 60%, var(--color-accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.title-separator {
+  color: var(--color-accent);
+  opacity: 0.45;
+  margin: 0 2px;
+}
+
+/* Acento laranja no OS */
+.title-accent {
+  background: linear-gradient(135deg, var(--color-accent-warm), var(--color-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px var(--color-accent-glow));
+}
+
+.app-subtitle {
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-top: var(--space-sm);
+}
+
+/* Badge de contagem de pendentes */
+.pending-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-accent-dim);
+  border: 1px solid var(--color-border-bright);
+  border-radius: var(--radius-md);
+  padding: var(--space-sm) var(--space-md);
+  min-width: 72px;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.pending-count {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-accent-warm);
+  line-height: 1;
+  filter: drop-shadow(0 0 8px var(--color-accent-glow));
+}
+
+.pending-label {
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* Decoração angular abaixo do título */
+.header-decorative {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+.deco-line {
+  height: 1px;
+  background: linear-gradient(to right, var(--color-accent), transparent);
+  flex: 1;
+  max-width: 200px;
+}
+
+.deco-line.short { max-width: 60px; }
+
+.deco-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--color-accent);
+  transform: rotate(45deg);
+  box-shadow: var(--glow-subtle);
+}
+
+/* ─────────────────────────────────────────
+   10. INPUT SECTION
+───────────────────────────────────────── */
+.input-card {
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Linha brilhante no topo do card */
+.input-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--space-xl);
+  right: var(--space-xl);
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-accent-warm), transparent);
+  opacity: 0.6;
+}
+
+.input-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+.input-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--color-accent);
+  opacity: 0.75;
+}
+
+.input-hint {
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+}
+
+/* Wrapper do input com ícone e botão */
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.input-icon {
+  font-size: 18px;
+  color: var(--color-accent);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+/* Campo de texto — estilo terminal: só borda inferior */
+.task-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid var(--color-border-subtle);
+  border-radius: 0;
+  padding: var(--space-sm) var(--space-xs);
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-text-primary);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  width: 100%;
+}
+
+.task-input::placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Glow laranja no foco */
+.task-input:focus {
+  border-bottom-color: var(--color-accent);
+  box-shadow: 0 3px 0 -1px var(--color-accent-glow);
+}
+
+/* ─────────────────────────────────────────
+   11. BOTÕES
+───────────────────────────────────────── */
+
+/* Botão primário — gradiente laranja, sem bordas arredondadas excessivas */
+.btn-add {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--color-accent-dark), var(--color-accent));
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-lg);
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  transition: transform var(--transition-fast), box-shadow var(--transition);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-add:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--glow-accent);
+}
+
+.btn-add:active {
+  transform: translateY(0);
+}
+
+/* Efeito scan line no hover do botão */
+.btn-glow {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+
+.btn-add:hover .btn-glow {
+  animation: scanLine 0.55s ease forwards;
+}
+
+/* Botão secundário — outline */
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  transition: border-color var(--transition), color var(--transition);
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* ─────────────────────────────────────────
+   12. FILTER BAR
+───────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.filter-label i { font-size: 14px; color: var(--color-accent); }
+
+/* Tabs de filtro */
+.filter-tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  padding: 2px;
+}
+
+.filter-tab {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--radius-md) - 2px);
+  padding: 6px var(--space-md);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.05em;
+  transition: background var(--transition), color var(--transition);
+}
+
+.filter-tab:hover { color: var(--color-text-primary); }
+
+.filter-tab.active {
+  background: var(--color-accent-dim);
+  color: var(--color-accent-warm);
+  border: 1px solid var(--color-border);
+}
+
+/* Contador dentro das tabs */
+.tab-count {
+  font-family: var(--font-display);
+  font-size: 10px;
+  background: rgba(232, 85, 13, 0.15);
+  color: var(--color-accent);
+  border-radius: 3px;
+  padding: 1px 5px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.filter-tab.active .tab-count {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+/* Botão de limpar concluídas */
+.btn-clear-done {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: transparent;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 6px var(--space-sm);
+  font-family: var(--font-body);
+  font-size: 11px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  transition: border-color var(--transition), color var(--transition);
+  margin-left: auto;
+}
+
+.btn-clear-done:hover {
+  border-color: #e53e3e;
+  color: #e53e3e;
+}
+
+.btn-clear-done i { font-size: 14px; }
+
+/* ─────────────────────────────────────────
+   13. TASK LIST & TASK ITEMS
+───────────────────────────────────────── */
+.tasks-section { flex: 1; }
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* Animação de entrada de cada item */
+@keyframes taskEnter {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Card de tarefa */
+.task-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  border-left: 2px solid transparent;
+  transition:
+    border-color var(--transition),
+    background var(--transition),
+    transform var(--transition-fast),
+    box-shadow var(--transition);
+  animation: taskEnter 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+  position: relative;
+  overflow: hidden;
+}
+
+.task-item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-accent-dim) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity var(--transition);
+  pointer-events: none;
+}
+
+.task-item:hover {
+  border-color: var(--color-border);
+  border-left-color: var(--color-accent);
+  background: var(--color-surface);
+  transform: translateX(2px);
+  box-shadow: var(--shadow-card);
+}
+
+.task-item:hover::before { opacity: 1; }
+
+/* Tarefa concluída */
+.task-item.done {
+  border-left-color: var(--color-accent-dark);
+  opacity: 0.58;
+}
+
+.task-item.done .task-text {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+/* Checkbox customizado */
+.task-checkbox {
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+  position: relative;
+}
+
+.task-checkbox:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--glow-subtle);
+}
+
+.task-checkbox.checked {
+  background: linear-gradient(135deg, var(--color-accent-dark), var(--color-accent));
+  border-color: var(--color-accent);
+}
+
+.task-checkbox.checked::after {
+  content: '';
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg) translateY(-1px);
+}
+
+/* Texto da tarefa */
+.task-text {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  word-break: break-word;
+  transition: color var(--transition);
+}
+
+/* Ações da tarefa (editar, deletar) */
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.task-item:hover .task-actions { opacity: 1; }
+
+.task-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: 15px;
+  transition: border-color var(--transition), color var(--transition), background var(--transition);
+}
+
+.task-action-btn.edit:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-dim);
+}
+
+.task-action-btn.delete:hover {
+  border-color: #e53e3e;
+  color: #e53e3e;
+  background: rgba(229, 62, 62, 0.1);
+}
+
+/* ─────────────────────────────────────────
+   14. EMPTY STATE
+───────────────────────────────────────── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-2xl) var(--space-xl);
+  text-align: center;
+  animation: fadeIn 0.5s ease;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  color: var(--color-accent);
+  opacity: 0.35;
+  margin-bottom: var(--space-sm);
+}
+
+.empty-title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.empty-sub {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+/* ─────────────────────────────────────────
+   15. MODAL DE EDIÇÃO
+───────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(5, 8, 16, 0.82);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-overlay[hidden] { display: none; }
+
+.modal-card {
+  width: 100%;
+  max-width: 500px;
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  position: relative;
+  animation: fadeSlideUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Linha de acento no topo do modal */
+.modal-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: var(--space-xl);
+  right: var(--space-xl);
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-accent), transparent);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--color-accent);
+}
+
+.modal-close {
+  background: transparent;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  font-size: 14px;
+  transition: border-color var(--transition), color var(--transition);
+}
+
+.modal-close:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.modal-body { margin-bottom: var(--space-lg); }
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-sm);
+}
+
+/* ─────────────────────────────────────────
+   16. FOOTER
+───────────────────────────────────────── */
+.app-footer { margin-top: auto; }
+
+.footer-line {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-border), transparent);
+  margin-bottom: var(--space-md);
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
+.footer-text {
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.footer-dot {
+  color: var(--color-accent);
+  opacity: 0.5;
+}
+
+/* ─────────────────────────────────────────
+   17. RESPONSIVIDADE
+───────────────────────────────────────── */
+
+/* Tablet */
+@media (max-width: 640px) {
+  .app-container {
+    padding: var(--space-lg) var(--space-md) var(--space-xl);
+  }
+
+  .header-accent-line { display: none; }
+
+  .app-title {
+    font-size: clamp(1.8rem, 10vw, 2.8rem);
+  }
+
+  .header-content {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .pending-badge {
+    align-self: flex-start;
+    flex-direction: row;
+    gap: var(--space-sm);
+    align-items: baseline;
+  }
+
+  .pending-count { font-size: 1.5rem; }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+
+  .btn-clear-done { margin-left: 0; }
+
+  .filter-tabs { width: 100%; justify-content: stretch; }
+  .filter-tab { flex: 1; justify-content: center; }
+
+  .task-actions { opacity: 1; } /* sempre visível no mobile */
+
+  .input-card { padding: var(--space-md); }
+
+  .input-wrapper { flex-wrap: wrap; gap: var(--space-sm); }
+
+  .btn-add {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Mobile pequeno */
+@media (max-width: 380px) {
+  .app-title { font-size: 1.6rem; }
+  .task-item { padding: var(--space-sm) var(--space-md); gap: var(--space-sm); }
+  .task-text { font-size: 13px; }
+}
+
+/* ─────────────────────────────────────────
+   18. UTILITÁRIOS
+───────────────────────────────────────── */
+
+/* Esconde elemento mas mantém acessibilidade */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Transição de remoção de item */
+.task-item.removing {
+  animation: fadeIn 0.25s ease reverse forwards;
+  pointer-events: none;
+}
